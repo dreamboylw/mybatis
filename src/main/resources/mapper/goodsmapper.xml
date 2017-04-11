@@ -113,4 +113,21 @@
     <delete id="DeleteGoods" parameterType="gm_goods">
        DELETE  FROM  gm_goods where id=#{id}
     </delete>
+    <!--批量插入-->
+    <insert id="InsertGoodsList" parameterType="java.util.List">
+        INSERT INTO gm_goods(goodsname,tid,price,store,status,descr,num,company,addtime,picname,picaddress)
+        VALUES
+        <foreach collection="list" item="List" open="(" close=")," separator=";">
+            #{goodsname},#{tid},#{price},#{store},#{status},#{descr},#{num},#{company},#{addtime},#{picname},#{picaddress}
+        </foreach>
+    </insert>
+    <!--批量插入-->
+    <insert id="InsertGoodsList" parameterType="java.util.List">
+        INSERT INTO gm_goods(goodsname,tid,price,store,status,descr,num,company,addtime,picname,picaddress)
+        VALUES
+        <foreach collection="list" item="List" open="(" close=")," separator=";">
+            #{goodsname},#{tid},#{price},#{store},#{status},#{descr},#{num},#{company},#{addtime},#{picname},#{picaddress}
+        </foreach>
+    </insert>
+
 </mapper>
