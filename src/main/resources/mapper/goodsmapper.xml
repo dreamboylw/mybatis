@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace是开创的mapper的命名空间，不能相同只能唯一，可以和接口类进行绑定，要写成接口类的全路径例如：java.mapper.goodsmapper-->
+<mapper namespace="mapper.goodsmapper">
+    <!-- id代表要查询字段，parameterType代表字段类型   resultType代表返回gm_goods实体类对象 -->
+    <select id="QueryGoodsById" parameterType="java.lang.Integer" resultType="gm_goods">
+        SELECT id,goodsname,tid,price,store,status,descr,num,company,addtime,picname,picaddress  FROM gm_goods WHERE id=#{id}
+    </select>
+    <!-- #{id}里面的id是gm_goods属性类里面的id -->
+    <select id="QueryGoodsByGoodsId" parameterType="gm_goods" resultType="gm_goods">
+        select id,goodsname,tid,price,store,status,descr,num,company,addtime,picname,picaddress from gm_goods where id=#{id}
+    </select>
+    <!-- 分页查询数据 传入一个-->
+    <select id="QueryGoodsLimit" parameterType="java.lang.Integer" resultType="gm_goods">
+        select id,goodsname,tid,price,store,status,descr,num,company,addtime,picname,picaddress from gm_goods limit #{page}
+    </select>
+    <!-- 模糊查询数据 传入一个字段 这里面使用$而不用#是因为$符号将传入数据直接生成在sql中-->
+    <select id="QueryGoodsLike" parameterType="gm_goods" resultType="gm_goods">
+        select id,goodsname,tid,price,store,status,descr,num,company,addtime,picname,picaddress from gm_goods where goodsname LIKE '%${goodsname}%'
+    </select>
+    <!--插入操作-->
+    <insert id="InsertGoods" parameterType="gm_goods" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO gm_goods(goodsname,tid,price,store,status,descr,num,company,addtime,picname,picaddress)
+        VALUES(#{goodsname},#{tid},#{price},#{store},#{status},#{descr},#{num},#{company},#{addtime},#{picname},#{picaddress})
+    </insert>
+    <!--更新一条数据全部操作操作-->
+    <update id="UpdateGoodsAll" parameterType="gm_goods">
+        UPDATE gm_goods SET goodsname=#{goodsname},tid=#{tid},price=#{price},store=#{store},
+        status=#{status},descr=#{descr},num=#{num},company=#{company},addtime=#{addtime},picname=#{picname},
+        picaddress=#{picaddress} WHERE  id=#{id}
+    </update>
+    <!--更新一条数据部分使用trim操作-->
+  <update id="UpdateGoodsTrim" parameterType="gm_goods">
+        UPDATE gm_goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsname !=null and goodsname !=''">
+                gm_goods.goodsname=#{goodsname},
+            </if>
+            <if test="tid !=null and tid !=''">
+                gm_goods.tid=#{tid},
+            </if>
+            <if test="price !=null and price !=''">
+                gm_goods.price=#{price},
+            </if>
+            <if test="store !=null and store !=''">
+                gm_goods.store=#{store},
+            </if>
+            <if test="status !=null and status !=''">
+                gm_goods.status=#{status},
+            </if>
+            <if test="descr !=null and descr !=''">
+                gm_goods.descr=#{descr},
+            </if>
+            <if test="num !=null and num !=''">
+                gm_goods.num=#{num},
+            </if>
+            <if test="company !=null and company !=''">
+                gm_goods.company=#{company},
+            </if>
+            <if test="addtime !=null and addtime !=''">
+                gm_goods.addtime=#{addtime},
+            </if>
+            <if test="picname !=null and picname !=''">
+                gm_goods.picname=#{picname},
+            </if>
+            <if test="picaddress !=null and picaddress !=''">
+                gm_goods.picaddress=#{picaddress},
+            </if>
+        </trim>
+        WHERE gm_goods.id=#{id}
+    </update>
+    <!--更新一条数据部分使用set操作-->
+    <update id="UpdateGoodsSet" parameterType="gm_goods">
+        UPDATE gm_goods g
+        <set>
+            <if test="goodsname !=null and goodsname !=''">
+                g.goodsname=#{goodsname},
+            </if>
+            <if test="tid !=null and tid !=''">
+                g.tid=#{tid},
+            </if>
+            <if test="price !=null and price !=''">
+                g.price=#{price},
+            </if>
+            <if test="store !=null and store !=''">
+                g.store=#{store},
+            </if>
+            <if test="status !=null and status !=''">
+                g.status=#{status},
+            </if>
+            <if test="descr !=null and descr !=''">
+                g.descr=#{descr},
+            </if>
+            <if test="num !=null and num !=''">
+                g.num=#{num},
+            </if>
+            <if test="company !=null and company !=''">
+                g.company=#{company},
+            </if>
+            <if test="addtime !=null and addtime !=''">
+                g.addtime=#{addtime},
+            </if>
+            <if test="picname !=null and picname !=''">
+                g.picname=#{picname},
+            </if>
+            <if test="picaddress !=null and picaddress !=''">
+                g.picaddress=#{picaddress},
+            </if>
+             </set>
+        WHERE g.id=#{id}
+    </update>
+    <!--删除操作-->
+    <delete id="DeleteGoods" parameterType="gm_goods">
+       DELETE  FROM  gm_goods where id=#{id}
+    </delete>
+</mapper>

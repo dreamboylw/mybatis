@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE configuration PUBLIC
+        "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="props.properties"></properties>
+    <!-- 全局别名设置，在映射文件中只需写别名，而不必写出整个类路径 -->
+    <typeAliases>
+        <package name="entity" />
+        <!--<typeAlias type="entity.gm_goods" alias="gm_goods"/>-->
+    </typeAliases>
+        <environments default="development">
+            <environment id="development">
+                <transactionManager type="JDBC"/>
+                <dataSource type="POOLED">
+                    <property name="driver" value="com.mysql.jdbc.Driver"/>
+                    <property name="url" value="${url}"/>
+                    <property name="username" value="${username}"/>
+                    <property name="password" value=""/>
+                </dataSource>
+            </environment>
+        </environments>
+        <mappers>
+          <mapper resource="mapper/goodsmapper.xml"/>
+            <!--&lt;!&ndash;<mapper resource="mapper/goodsmapper"/>&ndash;&gt;-->
+            <!--<package name="mapper"/>-->
+            <mapper resource="mapper/GoodMapper.xml"/>
+            <!--<mapper resource="mapper/goodsmapper"/>-->
+
+        </mappers>
+</configuration>
