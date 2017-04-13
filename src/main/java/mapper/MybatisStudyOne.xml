@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.MybatisStudyOne">
+    <!--<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+    <resultMap id="mybatisstudy" type="mybatisStudyOne">
+        <id column="ms_id" property="id"/>
+        <result column="ms_name" property="name"/>
+        <result column="ms_address" property="address"/>
+    </resultMap>
+    <!--include 是引用外部定义的代码块 -->
+    <select id="queryMstudyList" parameterType="mybatisStudyOne" resultMap="mybatisstudy">
+        SELECT ms_id,ms_name,ms_address FROM buytest t
+        <where>
+            <include refid="queryDao"/>
+        </where>
+    </select>
+    <select id="queryMstudyCount" parameterType="mybatisStudyOne" resultType="java.lang.Integer">
+        select count(1) FROM buytest t
+        <where>
+            <include refid="queryDao"/>
+        </where>
+    </select>
+    <!--定义公用代码块-->
+    <sql id="queryDao">
+        <if test="address!=null and address!=''">
+            AND t.ms_address LIKE '%${address}%'
+        </if>
+        <if test="id!=null and id!=''">
+            AND t.ms_id &gt; #{id}
+        </if>
+        <if test="name!=null and name!=''">
+            AND t.ms_name =#{name}
+        </if>
+    </sql>
+    <!--使用selectKey获取存储过程中生成的流水号来给mybaisStudyOne中id赋值-->
+    <insert id="insertmStudy" parameterType="mybatisStudyOne">
+        <selectKey keyColumn="order_sn" keyProperty="id" statementType="CALLABLE"
+                   resultType="java.lang.String" order="BEFORE">
+            call seq_no()
+        </selectKey>
+        insert into buytest(ms_id,ms_name,ms_address) VALUES(#{id},#{name},#{address})
+    </insert>
+    <select id="queryBatchId" parameterType="mybatisStudyOne" resultType="mybatisStudyOne">
+        select ms_id id,ms_name name,ms_address address
+        from buytest WHERE ms_id IN
+        <foreach collection="idds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="queryBatchIds" parameterType="java.util.List" resultType="mybatisStudyOne">
+        SELECT ms_id id,ms_name name,ms_address address FROM buytest
+        WHERE
+        <foreach collection="list" item="item" open="" close="" separator="or">
+            ms_id=#{item.id}
+        </foreach>
+    </select>
+    <insert id="insertBatchId" parameterType="java.util.List">
+        INSERT INTO buytest(ms_name,ms_address) VALUES
+        <foreach collection="list" item="item" open="" close=";" separator=",">
+            (#{item.name},#{item.address})
+        </foreach>
+    </insert>
+    <update id="updateBatchId" parameterType="java.util.List">
+        <foreach collection="list" item="item" open="" close="" separator=";">
+            UPDATE buytest
+            <set>
+                ms_name=#{item.name},ms_address=#{item.address}
+            </set>
+            where ms_id=#{item.id}
+        </foreach>
+    </update>
+    <!--使用resultMap進行多表查詢 collection关联的第二張表，association关联第三張表-->
+    <resultMap id="Studybuyla" type="mybatisStudyOne">
+        <id column="ms_id" property="id"/>
+        <result column="ms_name" property="name"/>
+        <result column="ms_address" property="address"/>
+        <collection property="buylatest1" ofType="buylatest1">
+            <id column="id" property="bl_id"/>
+            <result column="sex" property="bl_sex"/>
+            <result column="age" property="bl_age"/>
+            <association property="buylatest" javaType="buylatest">
+                <id column="id" property="buy_id"/>
+                <result column="name" property="buy_name"/>
+            </association>
+        </collection>
+    </resultMap>
+    <select id="queryOrder" parameterType="mybatisStudyOne" resultMap="Studybuyla">
+        SELECT
+        b.ms_id,
+        b.ms_name,
+        b.ms_address,
+        l.id,
+        l.sex,
+        l.age,
+        t.id,
+        t.name
+        from
+        buytest b,
+        buylatest t,
+        buylatest1 l
+        WHERE
+        b.ms_id=l.id
+        AND
+        l.id=t.id
+        <if test="id!=null and id!=''">
+            AND
+            b.ms_id=#{id}
+        </if>
+    </select>
+    <resultMap id="mybatisTwo" type="mybatisStudyOne">
+        <id column="ms_id" property="id"/>
+        <result column="ms_name" property="name"/>
+        <result column="ms_address" property="address"/>
+        <association property="goods" javaType="gm_goods" column="ms_id"
+                     select="mapper.goodsmapper.QueryGoodsById"/>
+    </resultMap>
+    <select id="queryBuyGm" parameterType="mybatisStudyOne" resultMap="mybatisTwo">
+        SELECT
+        t.ms_id,
+        t.ms_name,
+        t.ms_address
+        FROM
+        buytest t
+        WHERE
+        <if test="id!=null and id!=''">
+            t.ms_id=#{id}
+        </if>
+    </select>
+</mapper>

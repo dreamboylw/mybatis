@@ -17,4 +17,5 @@ public interface goodsmapper {
     public Integer UpdateGoodsTrim(gm_goods goods);
     public Integer UpdateGoodsSet(gm_goods goods);
     public Integer DeleteGoods(gm_goods goods);
+    public Integer InsertGoodsList(List<gm_goods> goods);
 }
