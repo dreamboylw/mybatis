@@ -18,9 +18,9 @@ import static org.junit.Assert.*;
 @Slf4j
 public class MybatisStudyOneTest {
     SqlSession session;
+    String str="mybatis.xml";
     @Before
     public void setUp() throws Exception {
-        String str="mybatis.xml";
         mybatisUtil mb=new mybatisUtil();
         session = mb.getsession(str);
     }
@@ -38,6 +38,10 @@ public class MybatisStudyOneTest {
          mso= msomapper.queryMstudyList(mso);
         //log.info("mso:{}",mso1);
         log.info("mso:{}",mso);
+        mybatisStudyOne mso1=new mybatisStudyOne();
+        mso1.setName("ddddd");
+        mso1=msomapper.queryMstudyList(mso1);
+        log.info("mso1:{}",mso1);
     }
 
     @Test
@@ -97,5 +101,24 @@ public class MybatisStudyOneTest {
         for (mybatisStudyOne m:mlist){
             log.info("mso:{}",m);
         }
+    }
+    @Test
+    public void testCache() throws Exception{
+        SqlSession sqlsession1= new mybatisUtil().getsession(str);
+        SqlSession sqlsession2= new mybatisUtil().getsession(str);
+        //创建代理对象
+        MybatisStudyOne msomapper = sqlsession1.getMapper(MybatisStudyOne.class);
+        //下边查询使用一个SqlSession
+        //第一次发起请求，查询id为1003的用户
+        mybatisStudyOne mbso= (mybatisStudyOne) msomapper.findBuyById(Integer.valueOf(1003));
+        System.out.println(mbso.getName());
+        //不关闭SqlSession无法写进二级缓存区域中
+        sqlsession1.close();
+        //创建代理对象
+        MybatisStudyOne msomapper1 = sqlsession1.getMapper(MybatisStudyOne.class);
+        //第二次发起请求，查询id为1003的用户
+        mybatisStudyOne mbso2= (mybatisStudyOne) msomapper.findBuyById(Integer.valueOf(1003));
+        System.out.println(mbso2.getName());
+        sqlsession2.close();
     }
 }

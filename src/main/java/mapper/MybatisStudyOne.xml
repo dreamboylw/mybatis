@@ -1,7 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mapper.MybatisStudyOne">
-    <!--<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+        <!--设置二级缓存-->
+
+    <!--<cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>-->
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+
+    <select id="queryBatchId" parameterType="java.lang.Integer" resultType="mybatisStudyOne">
+        select ms_id id,ms_name name,ms_address address
+        from buytest WHERE ms_id =#{id}
+    </select>
+
     <resultMap id="mybatisstudy" type="mybatisStudyOne">
         <id column="ms_id" property="id"/>
         <result column="ms_name" property="name"/>

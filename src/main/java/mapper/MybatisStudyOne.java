@@ -11,6 +11,7 @@ public interface MybatisStudyOne {
     //批量查询
     //public List<mybatisStudyOne> query
     public mybatisStudyOne queryMstudyList(mybatisStudyOne mso);
+    public mybatisStudyOne findBuyById(Integer mso);
     public Integer queryMstudyCount(mybatisStudyOne mso);
     public Integer insertmStudy(mybatisStudyOne mso);
     public mybatisStudyOne queryBatchId(mybatisStudyOne mso);
